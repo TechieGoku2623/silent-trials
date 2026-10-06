@@ -215,13 +215,14 @@ as seconds and peak RSS.
 
 | Phase | Deliverable | Status |
 | --- | --- | --- |
-| 0 | Research memo and harnesses | In review — docs/phase-0/research-memo.md |
-| 1 | Architecture, schemas, data contracts | Not started |
-| 2 | First vertical slice (`silent-trials reconcile`, clock + matcher) | Not started |
-| 3 | Evaluation, demo recordings, sponsor tables on a live snapshot | Not started |
+| 0 | Research memo and harnesses | Merged — docs/phase-0/research-memo.md |
+| 1 | Architecture, schemas, data contracts | Merged — docs/ARCHITECTURE.md |
+| 2 | First vertical slice (`silent-trials match`, `status`) | Merged |
+| 3 | Evaluation, demo recordings, sample dashboard | Merged — demo/*.cast |
 
-Phase 0 does not include a live AACT ingest, a FastAPI service, or
-asciinema recordings. Those start after this memo is reviewed.
+Live AACT / PubMed ingest remains unmeasured. The vertical slice runs on
+the committed catalog. Recordings are `demo/01-matching-explained.cast`,
+`demo/02-ambiguity-and-clock.cast`, `demo/03-evaluation.cast`.
 
 ### Highest-risk technical unknowns going into Phase 1
 

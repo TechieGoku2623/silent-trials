@@ -10,6 +10,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+from silent_trials.bounds import wilson_interval
 from silent_trials.matcher import match_trial
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -29,6 +30,8 @@ def main() -> None:
     missed = labels.get("reported_but_unmatched", 0)
     genuine_frac = genuine / n
     missed_frac = missed / n
+    genuine_lo, genuine_hi = wilson_interval(genuine, n)
+    missed_lo, missed_hi = wilson_interval(missed, n)
 
     matcher_nomatch = 0
     matcher_other = 0
@@ -41,9 +44,13 @@ def main() -> None:
 
     decision = (
         f"{missed}/{n} = {missed_frac:.3f} of unmatched trials are "
-        "reported-but-unmatched. Treating unmatched as silent overstates "
-        "non-reporting by that fraction on this adjudication set. "
-        f"{genuine}/{n} = {genuine_frac:.3f} are genuinely unreported."
+        "reported-but-unmatched "
+        f"(Wilson 95% CI {missed_lo:.3f}–{missed_hi:.3f}). "
+        "Treating unmatched as silent overstates non-reporting by that "
+        "fraction on this adjudication set. "
+        f"{genuine}/{n} = {genuine_frac:.3f} are genuinely unreported "
+        f"(Wilson 95% CI {genuine_lo:.3f}–{genuine_hi:.3f}). "
+        "Unmatched is a mixture, not a silence count."
     )
     out = {
         "n": n,
@@ -51,6 +58,8 @@ def main() -> None:
         "reported_but_unmatched": missed,
         "genuinely_unreported_fraction": genuine_frac,
         "reported_but_unmatched_fraction": missed_frac,
+        "genuinely_unreported_wilson95": [genuine_lo, genuine_hi],
+        "reported_but_unmatched_wilson95": [missed_lo, missed_hi],
         "overstatement_if_unmatched_equals_silent": missed_frac,
         "matcher_no_match": matcher_nomatch,
         "matcher_not_no_match": matcher_other,
@@ -60,10 +69,22 @@ def main() -> None:
     RESULTS.mkdir(parents=True, exist_ok=True)
     write_json(RESULTS / "results.json", out)
     table = md_table(
-        ["label", "n", "fraction"],
+        ["label", "n", "fraction", "wilson95_low", "wilson95_high"],
         [
-            ["genuinely_unreported", str(genuine), pct(genuine_frac)],
-            ["reported_but_unmatched", str(missed), pct(missed_frac)],
+            [
+                "genuinely_unreported",
+                str(genuine),
+                pct(genuine_frac),
+                pct(genuine_lo),
+                pct(genuine_hi),
+            ],
+            [
+                "reported_but_unmatched",
+                str(missed),
+                pct(missed_frac),
+                pct(missed_lo),
+                pct(missed_hi),
+            ],
         ],
     )
     md = (

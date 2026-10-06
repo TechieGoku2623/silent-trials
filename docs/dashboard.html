@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>silent-trials sample dashboard</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, sans-serif; margin: 2rem; max-width: 1100px; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+    th, td {
+      border: 1px solid #ccc; padding: 0.4rem 0.5rem;
+      text-align: left; vertical-align: top;
+    }
+    th { background: #f4f4f4; }
+    .note { background: #fff8e1; border: 1px solid #e0c36c; padding: 0.8rem 1rem; }
+    code { font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h1>silent-trials sample dashboard</h1>
+  <p class="note"><strong>Not a live registry.</strong> Research tool only. This output is not a determination of FDAAA 801 compliance and is not clinical advice. Phase 0 records are designed synthetic probes, not a live ClinicalTrials.gov or PubMed dump.
+  Reference date 2026-10-06. This page is generated from
+  <code>data/sample/samples.json</code>. Unmatched is not the same as unreported:
+  the matcher can miss a paper, two papers can tie (AMBIGUOUS), and a trial
+  inside the 12-month window is NOT_YET_DUE. Treating every unmatched NCT as
+  silent overstates non-reporting. See <code>docs/METHODOLOGY.md</code>.</p>
+  <h2>Designed catalog (n=20)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>NCT</th><th>sample</th><th>match</th><th>chosen</th>
+        <th>clock</th><th>posting route</th><th>days remaining</th>
+        <th>outcome</th><th>bucket</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>NCT00000001</td><td>S1-nct-in-abstract</td><td>MATCH</td><td>pub-s1</td><td>SILENT</td><td>none</td><td>-935</td><td>REPORTED_PUBLICATION</td><td>reported</td></tr>
+<tr><td>NCT00000002</td><td>S2-title-pi-condition-date</td><td>MATCH</td><td>pub-s2</td><td>SILENT</td><td>none</td><td>-1162</td><td>REPORTED_PUBLICATION</td><td>reported</td></tr>
+<tr><td>NCT00000003</td><td>S3-not-yet-due</td><td>NO_MATCH</td><td>—</td><td>NOT_YET_DUE</td><td>none</td><td>243</td><td>NOT_YET_DUE</td><td>not_yet_due</td></tr>
+<tr><td>NCT00000004</td><td>S4-registry-only</td><td>NO_MATCH</td><td>—</td><td>REPORTED_REGISTRY</td><td>registry results module</td><td>-730</td><td>REPORTED_REGISTRY</td><td>reported</td></tr>
+<tr><td>NCT00000005</td><td>S5-ambiguous</td><td>AMBIGUOUS</td><td>—</td><td>SILENT</td><td>none</td><td>-1284</td><td>SILENT</td><td>ambiguous_unmatched</td></tr>
+<tr><td>NCT00000006</td><td>S6-silent-due</td><td>NO_MATCH</td><td>—</td><td>SILENT</td><td>none</td><td>-995</td><td>SILENT</td><td>genuinely_unreported_on_this_catalog</td></tr>
+<tr><td>NCT00000007</td><td>S7-phase1-not-applicable</td><td>NO_MATCH</td><td>—</td><td>NOT_APPLICABLE</td><td>none</td><td>—</td><td>NOT_APPLICABLE</td><td>not_applicable</td></tr>
+<tr><td>NCT00000008</td><td>S8-reported-publication-only</td><td>MATCH</td><td>pub-s8</td><td>SILENT</td><td>none</td><td>-1254</td><td>REPORTED_PUBLICATION</td><td>reported</td></tr>
+<tr><td>NCT00000009</td><td>S9-primary-vs-study-date</td><td>NO_MATCH</td><td>—</td><td>SILENT</td><td>none</td><td>-400</td><td>SILENT</td><td>genuinely_unreported_on_this_catalog</td></tr>
+<tr><td>NCT00000010</td><td>S10-three-months-not-late</td><td>NO_MATCH</td><td>—</td><td>NOT_YET_DUE</td><td>none</td><td>273</td><td>NOT_YET_DUE</td><td>not_yet_due</td></tr>
+<tr><td>NCT00000011</td><td>S11-observational-not-act</td><td>NO_MATCH</td><td>—</td><td>NOT_APPLICABLE</td><td>none</td><td>—</td><td>NOT_APPLICABLE</td><td>not_applicable</td></tr>
+<tr><td>NCT00000012</td><td>S12-device-feasibility</td><td>NO_MATCH</td><td>—</td><td>NOT_APPLICABLE</td><td>none</td><td>—</td><td>NOT_APPLICABLE</td><td>not_applicable</td></tr>
+<tr><td>NCT00000013</td><td>S13-hard-negative-title</td><td>NO_MATCH</td><td>—</td><td>SILENT</td><td>none</td><td>-1315</td><td>SILENT</td><td>genuinely_unreported_on_this_catalog</td></tr>
+<tr><td>NCT00000014</td><td>S14-outside-date-window</td><td>NO_MATCH</td><td>—</td><td>SILENT</td><td>none</td><td>-4176</td><td>SILENT</td><td>genuinely_unreported_on_this_catalog</td></tr>
+<tr><td>NCT00000015</td><td>S15-reported-both</td><td>MATCH</td><td>pub-s15</td><td>REPORTED_REGISTRY</td><td>registry results module</td><td>-1435</td><td>REPORTED_BOTH</td><td>reported</td></tr>
+<tr><td>NCT00000016</td><td>S16-behavioral-not-act</td><td>NO_MATCH</td><td>—</td><td>NOT_APPLICABLE</td><td>none</td><td>—</td><td>NOT_APPLICABLE</td><td>not_applicable</td></tr>
+<tr><td>NCT00000017</td><td>S17-sponsor-b-silent</td><td>NO_MATCH</td><td>—</td><td>SILENT</td><td>none</td><td>-1343</td><td>SILENT</td><td>genuinely_unreported_on_this_catalog</td></tr>
+<tr><td>NCT00000018</td><td>S18-empty-corpus-unreported</td><td>NO_MATCH</td><td>—</td><td>SILENT</td><td>none</td><td>-918</td><td>SILENT</td><td>genuinely_unreported_on_this_catalog</td></tr>
+<tr><td>NCT00000019</td><td>S19-us-site-false-still-act</td><td>NO_MATCH</td><td>—</td><td>SILENT</td><td>none</td><td>-1193</td><td>SILENT</td><td>genuinely_unreported_on_this_catalog</td></tr>
+<tr><td>NCT00000020</td><td>S20-early-results-not-yet-due</td><td>NO_MATCH</td><td>—</td><td>REPORTED_REGISTRY</td><td>registry results module</td><td>207</td><td>REPORTED_REGISTRY</td><td>reported</td></tr>
+    </tbody>
+  </table>
+  <h2>Sponsor tallies on this catalog only</h2>
+  <p>Designed-probe counts. Not a ranking. Not an FDAAA enforcement list.</p>
+  <table>
+    <thead>
+      <tr><th>sponsor</th><th>n</th><th>silent</th><th>reported</th>
+      <th>not_yet_due</th><th>not_applicable</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Aether BioPharma</td><td>7</td><td>1</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Harbor Psychiatric Consortium</td><td>7</td><td>3</td><td>3</td><td>0</td><td>1</td></tr>
+<tr><td>Northlake Neurosciences</td><td>6</td><td>4</td><td>1</td><td>0</td><td>1</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

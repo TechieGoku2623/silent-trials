@@ -12,10 +12,10 @@ non-reporting by sponsor without converting matcher error into a ranking.
 
 | Phase | Deliverable | Status |
 | --- | --- | --- |
-| 0 | Research memo and harnesses | In review — docs/phase-0/research-memo.md |
-| 1 | Architecture, schemas, data contracts | Not started |
-| 2 | First vertical slice | Not started |
-| 3 | Evaluation and demo | Not started |
+| 0 | Research memo and harnesses | Merged — docs/phase-0/research-memo.md |
+| 1 | Architecture, schemas, data contracts | Merged — docs/ARCHITECTURE.md |
+| 2 | First vertical slice | Merged — `match` / `status` / `report` |
+| 3 | Evaluation and demo | Merged — demo/*.cast |
 
 Status values: Not started / In progress / In review / Merged.
 
@@ -33,100 +33,201 @@ and it does not tell you what fraction of unmatched NCTs are matcher misses.
 That mixture is the claim this repo measures first.
 
 This is research / decision-support tooling. It is not a regulatory
-determination of FDAAA 801 compliance and not clinical advice. Phase 0
-records are designed synthetic probes, not a live ClinicalTrials.gov dump.
+determination of FDAAA 801 compliance and not clinical advice. Records are
+designed synthetic probes, not a live ClinicalTrials.gov dump. See
+`docs/METHODOLOGY.md`.
 
 ## Walkthrough
 
-Phase 0 ships the designed sample set and the measurement harnesses. The
-`silent-trials reconcile` commands below are reserved for Phase 2; running
-them now is not implemented on purpose.
-
-### Step 1 — designed sample set
+No credentials. `make demo` runs the full match/status walkthrough on the
+designed catalog. Commands below are the same steps, captured as real
+stdout (reference date 2026-10-06).
 
 ```bash
 make setup && make demo
 ```
 
-`make demo` calls `silent-trials demo-plan`. Actual stdout:
-
-```
-silent-trials designed sample cases
-
-S1-nct-in-abstract  NCT00000001
-  path:     easy match: publication cites NCT00000001 in the abstract
-  expected: MATCH on pub-s1. Decision is nct_in_text. Headline linkage is defensible for this path.
-
-S2-title-pi-condition-date  NCT00000002
-  path:     no NCT in the publication; match on title, PI, condition, date window
-  expected: MATCH on pub-s2 via title similarity + PI Moreau + major depression + date window. No NCT signal.
-
-S3-not-yet-due  NCT00000003
-  path:     completed 4 months ago — within the FDAAA 12-month window, not delinquent
-  expected: status = NOT_YET_DUE as of 2026-10-06 with days remaining until 2027-06-06. Do not count as silent.
-
-S4-registry-only  NCT00000004
-  path:     completed 3 years ago, results posted to the registry, never journal-published
-  expected: REPORTED via registry (REPORTED_REGISTRY). Not silent. Journal absence is recorded, not scored as non-reporting.
-
-S5-ambiguous  NCT00000005
-  path:     two plausible candidate publications — matcher returns AMBIGUOUS
-  expected: AMBIGUOUS. Matcher does not pick pub-s5a or pub-s5b. Both share PI, condition, and a date window.
-```
-
-The records are designed: an NCT hit, a no-NCT hit, a not-yet-due clock, a
-registry-only report, and an ambiguous pair. See `data/sample/README.md`.
-
-Recordings `demo/01-reconcile.cast` land in Phase 3.
-
-### Step 2 — NCT-in-text match (Phase 2)
+### Step 1 — NCT-in-abstract match
 
 ```bash
-silent-trials reconcile --nct NCT00000001 --explain
+silent-trials match --nct NCT00000001 --explain
 ```
 
-Reserved. Sample S1. The evidence for the link is the product, not a score.
+Actual stdout:
 
-### Step 3 — no-NCT match (Phase 2)
+```
+NCT00000001  S1-nct-in-abstract
+decision:   MATCH
+chosen:     pub-s1
+rationale:  Single candidate pub-s1 scored 1.75: nct_in_text:NCT00000001; 
+title_similarity=0.44; pi_condition_date
 
-```bash
-silent-trials reconcile --nct NCT00000002 --explain
+candidates (all scored; features shown individually):
+  pub-s1  score=1.750  confidence=1.750
+    nct_in_text:        yes
+    title_similarity:   0.444
+    pi_match:           yes
+    condition_overlap:  1.000
+    date_in_window:     yes
+    reasons:            nct_in_text:NCT00000001; title_similarity=0.44; 
+pi_condition_date
+
+Research tool only. This output is not a determination of FDAAA 801 compliance 
+and is not clinical advice. Phase 0 records are designed synthetic probes, not a
+live ClinicalTrials.gov or PubMed dump.
 ```
 
-Reserved. Sample S2. Title, PI, condition, and the date window have to fire
-together. Title-only matching is the failure mode S13 exists to catch.
-
-### Step 4 — clock and ambiguity (Phase 2)
+### Step 2 — no NCT; title / PI / condition / date
 
 ```bash
-silent-trials reconcile --nct NCT00000003 --explain
-silent-trials reconcile --nct NCT00000005 --explain
+silent-trials match --nct NCT00000002 --explain
 ```
 
-Reserved. S3 must be NOT_YET_DUE. S5 must be AMBIGUOUS. A greedy pick on S5
-is a bug.
+Actual stdout:
 
-### Step 5 — registry-only, then the measured baseline
+```
+NCT00000002  S2-title-pi-condition-date
+decision:   MATCH
+chosen:     pub-s2
+rationale:  Single candidate pub-s2 scored 1.00: title_similarity=1.00; 
+pi_condition_date
+
+candidates (all scored; features shown individually):
+  pub-s2  score=1.000  confidence=1.000
+    nct_in_text:        no
+    title_similarity:   1.000
+    pi_match:           yes
+    condition_overlap:  1.000
+    date_in_window:     yes
+    reasons:            title_similarity=1.00; pi_condition_date
+
+Research tool only. This output is not a determination of FDAAA 801 compliance 
+and is not clinical advice. Phase 0 records are designed synthetic probes, not a
+live ClinicalTrials.gov or PubMed dump.
+```
+
+### Step 3 — AMBIGUOUS; matcher does not pick
 
 ```bash
-silent-trials reconcile --nct NCT00000004
+silent-trials match --nct NCT00000005 --explain
+```
+
+Actual stdout:
+
+```
+NCT00000005  S5-ambiguous
+decision:   AMBIGUOUS
+chosen:     (none — matcher does not pick)
+rationale:  pub-s5a (1.00) and pub-s5b (0.87) both clear the threshold and are 
+within 0.22; matcher does not pick.
+
+candidates (all scored; features shown individually):
+  pub-s5a  score=1.000  confidence=1.000
+    nct_in_text:        no
+    title_similarity:   1.000
+    pi_match:           yes
+    condition_overlap:  1.000
+    date_in_window:     yes
+    reasons:            title_similarity=1.00; pi_condition_date
+  pub-s5b  score=0.871  confidence=0.871
+    nct_in_text:        no
+    title_similarity:   0.714
+    pi_match:           yes
+    condition_overlap:  1.000
+    date_in_window:     yes
+    reasons:            title_similarity=0.71; pi_condition_date
+
+AMBIGUOUS: 2 candidates clear the 0.50 threshold and sit inside the margin. 
+Matcher does not pick.
+
+Research tool only. This output is not a determination of FDAAA 801 compliance 
+and is not clinical advice. Phase 0 records are designed synthetic probes, not a
+live ClinicalTrials.gov or PubMed dump.
+```
+
+### Step 4 — clock: NOT_YET_DUE
+
+```bash
+silent-trials status --nct NCT00000003
+```
+
+Actual stdout:
+
+```
+NCT00000003  S3-not-yet-due
+status:          NOT_YET_DUE
+clock status:    NOT_YET_DUE
+reference date:  2026-10-06
+completion:      2026-06-06 (primary)
+due date:        2027-06-06
+days remaining:  243
+days elapsed:    122
+applicable:      yes
+rationale:       Primary completion 2026-06-06 plus 12 months is 2027-06-06. 243
+days remain as of 2026-10-06.
+
+Research tool only. This output is not a determination of FDAAA 801 compliance 
+and is not clinical advice. Phase 0 records are designed synthetic probes, not a
+live ClinicalTrials.gov or PubMed dump.
+```
+
+### Step 5 — clock: REPORTED via registry, then eval
+
+```bash
+silent-trials status --nct NCT00000004
 make eval
 ```
 
-`silent-trials reconcile` on S4 is reserved (REPORTED_REGISTRY, not silent).
-`make eval` already runs: it regenerates `docs/EVALUATION.md` from the Phase
-0 harnesses. The matcher column in Results is that output.
+Actual stdout of `status`:
+
+```
+NCT00000004  S4-registry-only
+status:          REPORTED
+posting route:   registry results module (REPORTED_REGISTRY)
+registry posted: 2024-09-01
+clock status:    REPORTED_REGISTRY
+reference date:  2026-10-06
+completion:      2023-10-06 (primary)
+due date:        2024-10-06
+days remaining:  -730
+days elapsed:    1096
+applicable:      yes
+rationale:       Results information is posted to the registry. Absence of a 
+journal article does not make this trial silent.
+
+Research tool only. This output is not a determination of FDAAA 801 compliance 
+and is not clinical advice. Phase 0 records are designed synthetic probes, not a
+live ClinicalTrials.gov or PubMed dump.
+```
+
+`make eval` regenerates `docs/EVALUATION.md` from the Phase 0–3 harnesses:
+MATCH precision/recall, per-strategy candidate recall, and the
+unreported-vs-unmatched split with Wilson 95% bounds. Unmatched is not
+silent.
+
+Optional public dashboard (static HTML, no credentials):
+
+```bash
+make report
+```
+
+writes `docs/dashboard.html` from the sample catalog.
+
+Recordings: `demo/01-matching-explained.cast`,
+`demo/02-ambiguity-and-clock.cast`, `demo/03-evaluation.cast`.
 
 ## Layout
 
 Read in this order:
 
-1. `docs/phase-0/research-memo.md` — why the matcher and the failure condition
-2. `data/sample/README.md` — why each demo case exists
-3. `src/silent_trials/fdaaa.py` — the time-aware 12-month clock
-4. `src/silent_trials/matcher.py` — NCT, title, PI+condition+date
-5. `research/phase0/` — the three measurements behind the memo
-6. `src/silent_trials/cli.py` — demo-plan only, until Phase 2
+1. `docs/METHODOLOGY.md` — what a number is allowed to mean
+2. `docs/ARCHITECTURE.md` — contracts the CLI shares
+3. `docs/phase-0/research-memo.md` — why the matcher and the failure condition
+4. `data/sample/README.md` — why each demo case exists
+5. `src/silent_trials/fdaaa.py` — the time-aware 12-month clock
+6. `src/silent_trials/matcher.py` — NCT, title, PI+condition+date
+7. `research/phase0/` — the three measurements behind the memo
+8. `src/silent_trials/cli.py` — `match`, `status`, `report`, `demo`
 
 ## Results
 
@@ -156,17 +257,14 @@ flowchart LR
     cand --> match[match_trial]
     clock --> out[ReportingOutcome]
     match --> out
-    subgraph later [Phase 2 nodes, not built]
-      aact[AACT ingest]
-      pubmed[PubMed ingest]
-    end
-    trial -.-> aact
-    pubs -.-> pubmed
+    out --> cli[match / status CLI]
+    out --> dash[static HTML dashboard]
 ```
 
 `MatchResult.decision` is `AMBIGUOUS` when two candidates clear the
 threshold and sit inside the margin. `FdaaaClock.status` is `NOT_YET_DUE`
-when the reference date is still inside the 12-month window.
+when the reference date is still inside the 12-month window. Headline
+`REPORTED` names the posting route.
 
 ## ⚖️ Architecture Trade-offs & Pragmatic Decisions
 
@@ -182,20 +280,21 @@ when the reference date is still inside the 12-month window.
 
 - Completed 3 months ago: NOT_YET_DUE. A time-unaware clock calls this silent.
 - Completed 4 months ago: still NOT_YET_DUE (S3). Days remaining are required.
-- Results posted, no journal: REPORTED_REGISTRY, not silent (S4).
+- Results posted, no journal: REPORTED via registry, not silent (S4).
 - Two near-tie papers: AMBIGUOUS, no pick (S5).
 - Phase 1 drug, observational, device feasibility, behavioral: NOT_APPLICABLE.
 - Same PI, review eight years later: outside the date window (S14).
 - Similar title, wrong condition: NO_MATCH (S13).
 - Certified delays and good-cause extensions: unmeasured.
 - Live author-name variation / PI change: unmeasured.
+- Unmatched ≠ unreported. Wilson bounds sit on the committed split.
 
 ## Limitations
 
 This is not an FDAAA enforcement list. It does not replace a legal review.
-Phase 0 matches designed probe records, not live NCT/PMID pairs. Sponsor
-rankings on this probe set are forbidden. No demo recording is committed.
-Certified-delay fields are not ingested.
+The matcher and clock run on designed probe records, not live NCT/PMID
+pairs. Sponsor rankings on this probe set are forbidden. Certified-delay
+fields are not ingested. See `docs/METHODOLOGY.md`.
 
 ## License and citation
 

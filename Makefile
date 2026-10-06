@@ -1,14 +1,14 @@
 export PATH := $(HOME)/.local/bin:$(PATH)
 UV ?= uv
 
-.PHONY: setup lint test research eval demo record
+.PHONY: setup lint test research eval demo record report
 
 setup:
 	$(UV) sync --extra dev
 
 lint:
-	$(UV) run ruff check src tests research
-	$(UV) run ruff format --check src tests research
+	$(UV) run ruff check src tests research scripts
+	$(UV) run ruff format --check src tests research scripts
 	$(UV) run mypy
 
 test:
@@ -24,8 +24,10 @@ eval:
 	$(UV) run python research/phase0/render_docs.py
 
 demo:
-	$(UV) run silent-trials demo-plan
+	$(UV) run silent-trials demo
 
 record:
-	@echo "Asciinema recordings are a Phase 3 deliverable (demo/*.cast)."
-	@echo "Phase 0 has no reconcile CLI to record."
+	$(UV) run python scripts/record_demo.py
+
+report:
+	$(UV) run silent-trials report --out docs/dashboard.html

@@ -1,12 +1,20 @@
 {
-  "decision": "42/100 = 0.420 of unmatched trials are reported-but-unmatched. Treating unmatched as silent overstates non-reporting by that fraction on this adjudication set. 58/100 = 0.580 are genuinely unreported.",
+  "decision": "42/100 = 0.420 of unmatched trials are reported-but-unmatched (Wilson 95% CI 0.328\u20130.518). Treating unmatched as silent overstates non-reporting by that fraction on this adjudication set. 58/100 = 0.580 are genuinely unreported (Wilson 95% CI 0.482\u20130.672). Unmatched is a mixture, not a silence count.",
   "genuinely_unreported": 58,
   "genuinely_unreported_fraction": 0.58,
+  "genuinely_unreported_wilson95": [
+    0.4820630799889527,
+    0.672017750814887
+  ],
   "gold_source": "Hand-adjudicated labels on designed unmatched trials. Not a live ClinicalTrials.gov / PubMed review.",
   "matcher_no_match": 100,
   "matcher_not_no_match": 0,
   "n": 100,
   "overstatement_if_unmatched_equals_silent": 0.42,
   "reported_but_unmatched": 42,
-  "reported_but_unmatched_fraction": 0.42
+  "reported_but_unmatched_fraction": 0.42,
+  "reported_but_unmatched_wilson95": [
+    0.327982249185113,
+    0.5179369200110473
+  ]
 }

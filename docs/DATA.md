@@ -5,6 +5,7 @@ objects are:
 
 - `data/sample/samples.json` — 20 designed demo cases (see
   `data/sample/README.md`)
+- `docs/dashboard.html` — static catalog dashboard (`make report`)
 - `research/phase0/match_accuracy/probe_set/pairs.json` — 200 designed
   trial–publication pairing tasks
 - `research/phase0/unmatched_split/probe_set/labels.json` — 100
