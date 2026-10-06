@@ -1,0 +1,32 @@
+{
+  "corpus_size": 260,
+  "decision": "NCT search recall is 0.286 because most gold papers in this probe set do not print an NCT. Combined-strategy recall is 1.000. Title and PI+condition+date are not optional if the matcher is going to see the typical psychiatry paper.",
+  "n_pairs": 200,
+  "n_positive_trials": 120,
+  "strategies": {
+    "combined": {
+      "gold_publications": 140,
+      "n_positive_trials": 120,
+      "recall": 1.0,
+      "retrieved": 140
+    },
+    "nct_id_search": {
+      "gold_publications": 140,
+      "n_positive_trials": 120,
+      "recall": 0.2857142857142857,
+      "retrieved": 40
+    },
+    "pi_condition_date": {
+      "gold_publications": 140,
+      "n_positive_trials": 120,
+      "recall": 1.0,
+      "retrieved": 140
+    },
+    "title_search": {
+      "gold_publications": 140,
+      "n_positive_trials": 120,
+      "recall": 0.8571428571428571,
+      "retrieved": 120
+    }
+  }
+}

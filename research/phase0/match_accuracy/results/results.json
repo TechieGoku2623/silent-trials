@@ -1,0 +1,52 @@
+{
+  "ambiguous_accuracy": 0.9,
+  "ambiguous_correct": 18,
+  "ambiguous_n": 20,
+  "by_cohort": {
+    "ambiguous": {
+      "AMBIGUOUS": 18,
+      "MATCH": 2
+    },
+    "date_outside": {
+      "MATCH": 2,
+      "NO_MATCH": 18
+    },
+    "hard_negative_title": {
+      "NO_MATCH": 20
+    },
+    "hard_positive": {
+      "MATCH": 20
+    },
+    "nct_easy": {
+      "MATCH": 40
+    },
+    "title_pi_date": {
+      "MATCH": 40
+    },
+    "true_unmatched": {
+      "NO_MATCH": 40
+    }
+  },
+  "confusion": {
+    "AMBIGUOUS->AMBIGUOUS": 18,
+    "AMBIGUOUS->MATCH": 2,
+    "MATCH->MATCH": 100,
+    "NO_MATCH->MATCH": 2,
+    "NO_MATCH->NO_MATCH": 78
+  },
+  "decision": "Headline non-reporting statistic is defensible on this probe set (MATCH precision 0.962 >= 0.85 and recall 1.000 >= 0.80).",
+  "decision_accuracy": 0.98,
+  "f1": 0.9803921568627451,
+  "gold_source": "Designed/synthetic trial-publication pairs modeled on ClinicalTrials.gov and PubMed. Not a live API dump. Gold labels are committed with the records.",
+  "headline_defensible": true,
+  "link_accuracy_given_match": 1.0,
+  "match_fn": 0,
+  "match_fp": 4,
+  "match_tn": 96,
+  "match_tp": 100,
+  "n_pairs": 200,
+  "precision": 0.9615384615384616,
+  "precision_floor": 0.85,
+  "recall": 1.0,
+  "recall_floor": 0.8
+}
