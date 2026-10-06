@@ -20,3 +20,6 @@ def test_wilson_all_success() -> None:
     low, high = wilson_interval(100, 100)
     assert low > 0.95
     assert high == 1.0
+    zero_low, zero_high = wilson_interval(0, 100)
+    assert zero_low == 0.0
+    assert zero_high < 0.05

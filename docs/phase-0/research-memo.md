@@ -139,12 +139,12 @@ import into every sponsor rank if you skip adjudication.
 
 Measurement: `research/phase0/unmatched_split/` on 100 committed labels.
 
-| label | n | fraction |
-| --- | --- | --- |
-| genuinely_unreported | 58 | 0.580 |
-| reported_but_unmatched | 42 | 0.420 |
+| label | n | fraction | wilson95_low | wilson95_high |
+| --- | --- | --- | --- | --- |
+| genuinely_unreported | 58 | 0.580 | 0.482 | 0.672 |
+| reported_but_unmatched | 42 | 0.420 | 0.328 | 0.518 |
 
-Decision: **42/100 = 0.420 of unmatched trials are reported-but-unmatched. Treating unmatched as silent overstates non-reporting by that fraction on this adjudication set. 58/100 = 0.580 are genuinely unreported.**
+Decision: **42/100 = 0.420 of unmatched trials are reported-but-unmatched (Wilson 95% CI 0.328–0.518). Treating unmatched as silent overstates non-reporting by that fraction on this adjudication set. 58/100 = 0.580 are genuinely unreported (Wilson 95% CI 0.482–0.672). Unmatched is a mixture, not a silence count.**
 
 ### 4.4 Clock and storage
 
@@ -246,13 +246,14 @@ as seconds and peak RSS.
 
 | Phase | Deliverable | Status |
 | --- | --- | --- |
-| 0 | Research memo and harnesses | In review — docs/phase-0/research-memo.md |
-| 1 | Architecture, schemas, data contracts | Not started |
-| 2 | First vertical slice (`silent-trials reconcile`, clock + matcher) | Not started |
-| 3 | Evaluation, demo recordings, sponsor tables on a live snapshot | Not started |
+| 0 | Research memo and harnesses | Merged — docs/phase-0/research-memo.md |
+| 1 | Architecture, schemas, data contracts | Merged — docs/ARCHITECTURE.md |
+| 2 | First vertical slice (`silent-trials match`, `status`) | Merged |
+| 3 | Evaluation, demo recordings, sample dashboard | Merged — demo/*.cast |
 
-Phase 0 does not include a live AACT ingest, a FastAPI service, or
-asciinema recordings. Those start after this memo is reviewed.
+Live AACT / PubMed ingest remains unmeasured. The vertical slice runs on
+the committed catalog. Recordings are `demo/01-matching-explained.cast`,
+`demo/02-ambiguity-and-clock.cast`, `demo/03-evaluation.cast`.
 
 ### Highest-risk technical unknowns going into Phase 1
 

@@ -20,4 +20,10 @@ def wilson_interval(successes: int, n: int, z: float = 1.96) -> tuple[float, flo
     denom = 1.0 + z2 / n
     center = (p + z2 / (2.0 * n)) / denom
     margin = (z / denom) * math.sqrt(p * (1.0 - p) / n + z2 / (4.0 * n * n))
-    return (max(0.0, center - margin), min(1.0, center + margin))
+    low = max(0.0, center - margin)
+    high = min(1.0, center + margin)
+    if successes == 0:
+        low = 0.0
+    if successes == n:
+        high = 1.0
+    return (low, high)
