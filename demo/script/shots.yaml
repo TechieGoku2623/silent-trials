@@ -1,0 +1,38 @@
+title: silent-trials
+tagline: Reconciling registered neuro trials against published outcomes
+problem:
+  - Trials that fail often never report their results.
+  - The same hypotheses get re-funded and re-run.
+  - Meta-analyses inherit the bias.
+shots:
+  - id: 01-easy-match
+    command: silent-trials match --nct NCT00000001 --explain
+    caption: Every candidate considered, with the features that scored it
+    hold: 3.5
+    failure_beat: false
+  - id: 02-no-nct
+    command: silent-trials match --nct NCT00000002 --explain
+    caption: No NCT ID in the paper — matched on title, PI, condition, window
+    hold: 4.0
+    highlight: "title|PI|condition|window"
+    failure_beat: false
+  - id: 03-ambiguous
+    command: silent-trials match --nct NCT00000005 --explain
+    caption: Two plausible papers — returns AMBIGUOUS rather than picking
+    hold: 4.5
+    highlight: "AMBIGUOUS"
+    failure_beat: true
+  - id: 04-not-due
+    command: silent-trials status --nct NCT00000003
+    caption: Completed 4 months ago — not yet due under FDAAA
+    hold: 3.0
+    highlight: "not yet due|NOT_YET_DUE"
+    failure_beat: false
+results:
+  command: silent-trials eval --summary
+  caption: The reporting rate, published with its error bars
+  hold: 6.0
+end_card:
+  url: github.com/techiegoku2623/silent-trials
+  license: MIT
+gif_beat: 03-ambiguous

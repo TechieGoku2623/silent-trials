@@ -17,7 +17,7 @@ from silent_trials.matcher import match_trial
 from silent_trials.schemas import CandidateScore, FdaaaClock, MatchResult, SampleCase
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
-console = Console(width=140)
+console = Console(width=100)
 
 ROUTE_LABEL = {
     "REPORTED_REGISTRY": "registry results module",
@@ -196,6 +196,25 @@ def report_cmd(
     path = out if out.is_absolute() else get_settings().repo_root / out
     write_dashboard(path)
     console.print(f"wrote {path}")
+    _print_disclaimer()
+
+
+@app.command("eval")
+def eval_cmd(
+    summary: bool = typer.Option(True, "--summary/--full"),
+) -> None:
+    """Print the published MATCH precision/recall table."""
+
+    path = get_settings().repo_root / "docs" / "EVALUATION.md"
+    n = 0
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("# Evaluation"):
+            continue
+        console.print(line[:100])
+        if line.strip():
+            n += 1
+        if n >= 14:
+            break
     _print_disclaimer()
 
 

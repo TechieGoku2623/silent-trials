@@ -1,0 +1,3 @@
+1
+00:00:04,057 --> 00:00:07,559
+Every candidate considered, with the features that scored it
