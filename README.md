@@ -22,7 +22,6 @@ Regenerable terminal video: `make record`. [Full mp4](demo/out/silent-trials-dem
 | 2 | First vertical slice | Merged — `match` / `status` / `report` |
 | 3 | Evaluation and demo | Merged — demo/*.cast |
 
-Status values: Not started / In progress / In review / Merged.
 
 ## The problem this solves
 
